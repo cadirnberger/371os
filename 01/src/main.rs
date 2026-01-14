@@ -46,5 +46,5 @@ fn main() {
     let words = words(filename);
     let bytes = byte(filename).expect("Failed to count bytes");
 
-    println!("{} {} {} {}", lines, words, bytes, filename); 
+    println!(" {} {} {} {}", lines, words, bytes, filename); 
 }
