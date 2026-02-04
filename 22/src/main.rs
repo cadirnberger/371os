@@ -1,5 +1,5 @@
 use malloc::*; // crate name
-
+use clap::Parser;
 fn main() {
     let p0 = malloc(16).unwrap();
     let p1 = malloc(32).unwrap();
@@ -12,4 +12,5 @@ fn main() {
     assert!(x == z);
     assert!(y == w);
     println!("A+");
+
 }
