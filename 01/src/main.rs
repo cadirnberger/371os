@@ -1,8 +1,6 @@
 use std::io::Read;
 use std::fs;
-
 fn byte(filename:&str)-> std::io::Result<u64>{
-    let mut file = std::fs::File::open(filename)?;
     let mut count = 0;
     let mut buffer = [0u8; 8192];
 
