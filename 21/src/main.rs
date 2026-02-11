@@ -3,5 +3,6 @@ fn main() {
     unsafe {
         let st: &str =  std::mem::transmute::<(usize,usize), &str>((&byte as *const _ as usize,12));
         println!("{}", st);
+        println!("{}", std::mem::transmute::<&[u8], &str>(&std::mem::transmute::<[i32; 3], [u8; 12]>([1819043144, 1870078063, 560229490])));
     }
 }
