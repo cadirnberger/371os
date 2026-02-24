@@ -4,7 +4,7 @@ import numpy as np
 import io
 
 # Download image
-r = requests.get("https://cd-rs.github.io/os/img/rainbow.jpg").content
+r = requests.get("https://cd-public.github.io/ai101/images/photo-cat.jpg").content
 img = Image.open(io.BytesIO(r)).convert("RGB")
 
 # Resize to VGA 80x25

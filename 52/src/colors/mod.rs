@@ -5,8 +5,13 @@ pub fn colors() {
     const ROWS: usize = 25;
     const COLS: usize = 80;
     fn rgb_to_vga_color(r: u8, g: u8, b: u8) -> u8 {
-        // 3 bits red, 3 bits green, 2 bits blue
-        ((r >> 5) << 5) | ((g >> 5) << 2) | (b >> 6)
+    let mut color = if r > 180 || g > 180 || b > 180 { 8 } else { 0 };
+
+    if r > 128 { color |= 0b100; }
+    if g > 128 { color |= 0b010; }
+    if b > 128 { color |= 0b001; }
+
+    color << 4
     }
 
     unsafe{
