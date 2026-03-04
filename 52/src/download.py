@@ -1,10 +1,10 @@
 from PIL import Image
-import requests
-import numpy as np
-import io
+import requests, numpy as np, io, sys
+
+
 
 # Download image
-r = requests.get("https://cd-public.github.io/ai101/images/photo-cat.jpg").content
+r = requests.get(sys.argv[1]).content
 img = Image.open(io.BytesIO(r)).convert("RGB")
 
 # Resize to VGA 80x25

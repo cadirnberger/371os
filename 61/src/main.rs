@@ -6,28 +6,39 @@
 #![reexport_test_harness_main = "test_main"]
 
 mod vga;
+mod serial;
 //mod colors;
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    println!("I'm main.");
+    //println!("I'm main.");
     #[cfg(test)]
     test_runner(&[]);
     loop {}
 }
 
-
+#[cfg(not(test))]
 #[panic_handler]
 fn panic(info: &core::panic::PanicInfo) -> ! {
     println!("{}", info);
     loop {}
 }
 #[cfg(test)]
+#[panic_handler]
+fn panic(info: &core::panic::PanicInfo) -> ! {
+    serial_println!("[Failed]");
+    serial_println!("Error: {}\n", info);
+    unsafe{
+    x86_64::instructions::port::Port::new(0xf4).write(0xFu32);
+    }
+    loop {}
+}
+#[cfg(test)]
 pub fn test_runner(_tests: &[&dyn Fn()]) {
-    let fs = [_ex]; // Array of test functions
+    let fs = [_ex, _bad]; // Array of test functions
     for i in 0..fs.len() {
-        print!("Running test case {:0x}", i);
+        serial_print!("Beginning test 0x{:02x}...", i);
         fs[i]();
-        println!("Success.");
+        serial_println!("[Pass]");
     }
     // Exit QEMU after tests
     unsafe {
@@ -39,10 +50,20 @@ fn _hi() {
     return;
 }
 
-fn _bye() {
-    println!("Goodbye space!");
-    return;
+fn _bad() {
+    assert!(false);
 }
 fn _ex() {
     assert!(true);
 }
+
+
+
+
+
+
+
+
+
+
+

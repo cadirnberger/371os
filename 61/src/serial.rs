@@ -1,3 +1,4 @@
+use uart_16550::SerialPort;
 /// Prints to the host through the serial interface.
 #[macro_export]
 macro_rules! serial_print {
@@ -14,11 +15,13 @@ macro_rules! serial_println {
     ($fmt:expr, $($arg:tt)*) => ($crate::serial_print!(
         concat!($fmt, "\n"), $($arg)*));
 }
-impl core::fmt::Write for SerialPort {
-    fn write_fmt(&mut self, ) -> core::fmt::Result
-}
+//struct SerialPort{}
+//impl core::fmt::Write for SerialPort{
+//}
+
 pub fn _print(args: core::fmt::Arguments) {
     use core::fmt::Write;
-    let mut serial_port = Dummy {};
+    let mut serial_port = unsafe {SerialPort::new(0x3F8)};
+    serial_port.init();
     serial_port.write_fmt(args).unwrap();
 }
