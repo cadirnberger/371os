@@ -10,13 +10,15 @@ fn test_panic(_info: &core::panic::PanicInfo) -> ! {
     loop {}
 }
 
-fn print_test() {
-    osirs::println!("Hi I am caden");
+fn except_test(){
+    x86_64::instructions::interrupts::int3();
+    osirs::serial_println!("[Pass] Breakpoint exception handled successfully");
 }
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    osirs::_test_runner(&[&print_test]);
-    osirs::exit(osirs::QEMUExit::Pass);
+    osirs::init();
+    osirs::_test_runner(&[&except_test]);
+    osirs::exit(osirs::QEMUExit::Fail);
     loop {}
 }
