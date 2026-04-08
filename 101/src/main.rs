@@ -9,9 +9,8 @@ mod vga;
 //mod colors;
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    let ptr = 0xdeadbeaf as *mut u8;
-    unsafe { *ptr = 42; }
-    println!("It did not crash!");
+    osirs::init();
+    println!("Level 4 page table at: {:?}", x86_64::registers::control::Cr3::read().0.start_address());
     loop {}
 }
 
