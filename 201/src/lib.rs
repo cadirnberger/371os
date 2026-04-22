@@ -1,0 +1,57 @@
+#![no_main]
+#![no_std]
+#![feature(abi_x86_interrupt)]
+#![feature(custom_test_frameworks)]
+#![test_runner(crate::_test_runner)]
+#![reexport_test_harness_main = "test_main"]
+extern crate alloc;
+pub mod gdt;
+pub mod interrupts;
+pub mod serial;
+pub mod vga;
+pub mod allocator;
+pub mod memory;
+pub enum QEMUExit {
+    Pass = 0xA,
+    Fail = 0xF,
+}
+pub fn exit(exit_code: QEMUExit) {
+    unsafe {
+        let mut port = x86_64::instructions::port::Port::new(0xf4);
+        port.write(exit_code as u32);
+    }
+}
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &core::panic::PanicInfo) -> ! {
+    test_panic(info)
+}
+pub fn test_panic(info: &core::panic::PanicInfo) -> ! {
+    serial_println!("[Failed]");
+    serial_println!("Error: {}\n", info);
+    exit(QEMUExit::Fail);
+    loop {}
+}
+
+pub fn _test_runner(_tests: &[&dyn Fn()]) {
+    serial_println!("Running {} tests", _tests.len());
+
+    for test in _tests {
+        test();
+    }
+    exit(QEMUExit::Pass);
+}
+pub fn init() {
+    interrupts::init_idt();
+    gdt::init_gdt();    
+}
+#[cfg(test)]
+#[unsafe(no_mangle)]
+pub extern "C" fn _start() -> ! {
+    #[cfg(test)]
+    test_main();
+    loop {}
+}
+pub fn halt() -> ! {
+    loop { x86_64::instructions::hlt(); }
+}
