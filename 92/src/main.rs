@@ -15,8 +15,8 @@ pub extern "C" fn _start() -> ! {
         x86_64::instructions::hlt();
         clock.update();
 
-        //if clock.seconds != last_second {
-        //    last_second = clock.seconds;
+        if clock.seconds != last_second {
+            last_second = clock.seconds;
 
         osirs::print!(
             "Time: {:02}:{:02}:{:02}\n",
@@ -24,7 +24,7 @@ pub extern "C" fn _start() -> ! {
             clock.minutes,
             clock.seconds
         );
-        //}
+        }
     }
 }
 
